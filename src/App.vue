@@ -1,7 +1,6 @@
 <template>
     <div id="app">
         <Header />
-        <img alt="Vue logo" src="./assets/logo.png">
         <StickyNotes msg="Welcome to Your Vue.js App"/>
     </div>
 </template>

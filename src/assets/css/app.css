@@ -31,3 +31,49 @@
 @tailwind preflight;
 @tailwind components;
 @tailwind utilities;
+
+/*------Colors------*/
+.openDivs {
+    transform: translateX(-50%) scale(1) !important;
+}
+.colors{
+    display: -webkit-inline-box;
+    padding: 15px;
+    position: absolute;
+    background-color: #fff;
+    border-radius: 60px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.31);
+    left: 50%;
+    bottom: 30px;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%) scale(0);
+}
+.colors .circle {
+    width: 30px;
+    height: 30px;
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.colors .circle.selected {
+    border: 2px dashed #777;
+}
+.yellow {
+    background-color: #FFEDA5 !important;
+}
+.blue {
+    background-color: #BCE0FF !important;
+}
+.red {
+    background-color: #FFB2B2 !important;
+}
+.purple {
+    background-color: #B0A4E6 !important;
+}
+.white   {
+    background-color: #fff !important;
+}
+.whiteCircle   {
+    background-color: #fff !important;
+    border: 1px solid #ccc;
+}
