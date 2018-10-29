@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'poppin-light';
+    src: url(../fonts/Poppins-Light.ttf);
+}
+
+@font-face {
+    font-family: 'poppin-reg';
+    src: url(../fonts/Poppins-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'poppin-med';
+    src: url(../fonts/Poppins-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'poppin-sbold';
+    src: url(../fonts/Poppins-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: 'toriom-med';
+    src: url(../fonts/toriom-medium.ttf);
+}
+
+@font-face {
+    font-family: 'toriom-light';
+    src: url(../fonts/toriom-light.ttf);
+}
+
+@tailwind preflight;
+@tailwind components;
+@tailwind utilities;
