@@ -1,4 +1,7 @@
-# sitcky-notes
+# Sticky Notes
+This is a Notes Taking app built with [VueJS](https://github.com/vuejs/vue) and [TailwindCSS](https://github.com/tailwindcss/tailwindcss) with the help of the [VueCLI](https://github.com/vuejs/vue-cli).
+
+I've also used the [HTML5 Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) for a fake database just for demo purposes.
 
 ## Project setup
 ```
@@ -24,3 +27,5 @@ yarn run test
 ```
 yarn run lint
 ```
+#Credits
+* [Feather Icons](https://feathericons.com/) for SVG Icons
