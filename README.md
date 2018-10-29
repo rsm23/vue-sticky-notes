@@ -27,5 +27,5 @@ yarn run test
 ```
 yarn run lint
 ```
-#Credits
+# Credits
 * [Feather Icons](https://feathericons.com/) for SVG Icons
