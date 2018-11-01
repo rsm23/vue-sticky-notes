@@ -2,27 +2,32 @@
     <div>
         <div class="container px-2 mx-auto">
             <div class="flex">
-                <div class="w-full pr-4 pl-4 pr-4 pl-4 shadow-lg m-4 p-6 relative rounded-lg" v-bind:class="[newNote.color]">
+                <div class="w-full pr-4 pl-4 pr-4 pl-4 shadow-lg m-4 p-6 relative rounded-lg bg-white"
+                     v-bind:class="[newNote.color]">
                     <div class="single-note add-note">
-                        <input class="appearance-none bg-transparent border-none w-full text-grey-darker mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        <input class="appearance-none bg-transparent border-b border-b-2 border-grey-ligher w-full text-grey-darker p-4 focus:outline-none mb-1"
                                placeholder="Type a title ..." type="text" v-model="noteTitle">
-                        <small class="text-left">Today: {{ todayDate }}</small>
-                        <hr>
-                        <textarea class="w-full shadow-inner p-4 border-0 rounded bg-transparent" placeholder="Type a description ..."
-                                  v-model="noteText"></textarea>
+                        <textarea @input="textareaResize"
+                                  class="w-full p-4 border-0 bg-transparent focus:outline-none text-grey-darker "
+                                  placeholder="Type a description ..." ref="textarea" v-model="noteText"></textarea>
                         <div class="flex justify-around">
-                        <span @click="toggleTransition(-1)" class="cursor-pointer"><svg class="feather feather-folder-plus" fill="none"
-                                                                                        height="24" stroke="currentColor" stroke-linecap="round"
-                                                                                        stroke-linejoin="round" stroke-width="2"
-                                                                                        viewBox="0 0 24 24" width="24"
-                                                                                        xmlns="http://www.w3.org/2000/svg"><path
+                        <span @click="toggleTransition(-1)" class="cursor-pointer"><svg
+                                class="feather feather-folder-plus" fill="none"
+                                height="24" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2"
+                                viewBox="0 0 24 24" width="24"
+                                xmlns="http://www.w3.org/2000/svg"><path
                                 d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line
                                 x1="12" x2="12" y1="11" y2="17"></line><line x1="9" x2="15" y1="14"
                                                                              y2="14"></line></svg></span>
-                            <span @click="insertNote" class="cursor-pointer"><svg class="feather feather-check" fill="none" height="24"
-                                                                                  stroke="currentColor" stroke-linecap="round"
+                            <small class="block text-center">Today: {{ todayDate }}</small>
+                            <span @click="insertNote" class="cursor-pointer"><svg class="feather feather-check"
+                                                                                  fill="none" height="24"
+                                                                                  stroke="currentColor"
+                                                                                  stroke-linecap="round"
                                                                                   stroke-linejoin="round"
-                                                                                  stroke-width="2" viewBox="0 0 24 24" width="24"
+                                                                                  stroke-width="2" viewBox="0 0 24 24"
+                                                                                  width="24"
                                                                                   xmlns="http://www.w3.org/2000/svg"><polyline
                                     points="20 6 9 17 4 12"></polyline></svg></span>
                         </div>
@@ -104,6 +109,9 @@
                 }
             }
         },
+        mounted() {
+            this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
+        },
         methods: {
             // Toggle The Effect
             toggleTransition: function (id) {
@@ -140,9 +148,22 @@
                     this.noteText = '';
                     this.noteColor = '#fff';
                     this.currentID = -2;
+                    this.$refs.textarea.style.minHeight = 'inherit';
                 }
+            },
+            textareaResize() {
+                this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
             }
         }
     }
 </script>
+<style scoped>
+    input {
+        box-shadow: inset 0 -2px 4px 0px rgba(0, 0, 0, .16)
+    }
+
+    textarea {
+        box-shadow: inset 0 2px 4px 0px rgba(0, 0, 0, .16)
+    }
+</style>
 

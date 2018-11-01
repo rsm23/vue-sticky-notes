@@ -29,3 +29,4 @@ yarn run lint
 ```
 # Credits
 * [Feather Icons](https://feathericons.com/) for SVG Icons
+* Checkbox animation : [Mikael Ainalem](https://codepen.io/ainalem/details/ejzExg/)
