@@ -4,7 +4,7 @@
             <div :key="oneNote._id" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6"
                  v-bind:class="[oneNote.color]" v-for="(oneNote, i) in allNotes">
                 <div class="relative" v-if="oneNote.text">
-                    <span @click="finishTask(i)" class="absolute cursor-pointer" id="check">
+                    <span @click="finishTask(oneNote)" class="absolute cursor-pointer" id="check" v-if="editId !== i">
                         <svg :class="{'checked': oneNote.completed}" viewBox="0 0 100 100">
                             <path
                                     class="frame"
@@ -18,7 +18,7 @@
                            class="appearance-none bg-transparent border-none w-full mr-3 py-2 focus:outline-none"
                            placeholder="Type a title ..." style="max-width: 92%;"
                            type="text"
-                           v-if="edit && editId === oneNote._id" v-model="oneNote.title">
+                           v-if="edit && editId === i" v-model="oneNote.title">
                     <h2 :class="{isDone: oneNote.completed}" class="fadeText overflow-auto mb-3"
                         style="max-width: 92%;overflow: auto; white-space:nowrap;"
                         v-else>{{oneNote.title}}</h2>
@@ -28,13 +28,14 @@
                     <hr>
                     <textarea class="w-full shadow-inner p-2 border-0 rounded bg-transparent"
                               placeholder="Type a description ..."
-                              v-if="edit && editId === oneNote._id"
+                              v-if="edit && editId === i"
                               v-model="oneNote.text"></textarea>
                     <p :class="{expand: idToExpand === oneNote._id, isDone: oneNote.completed}"
                        class="text-left overflow-x-auto h-16 break-words mt-4"
                        v-else v-html="modifiedText(i)"></p>
-                    <div :class="(idToExpand === oneNote._id) ? 'mt-2' : 'mt-10' " class="flex justify-between">
-                        <span @click="updateNote(i, oneNote)" class="cursor-pointer" v-if="edit && editId == i"><svg
+                    <div :class="(idToExpand === i) ? 'mt-2' : 'mt-10' " class="flex justify-between">
+                        <span @click="updateNote(oneNote)" class="cursor-pointer"
+                              v-if="edit && editId === i"><svg
                                 class="feather feather-check"
                                 fill="none" height="24"
                                 stroke="currentColor"
@@ -88,15 +89,15 @@
                                 d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></span>
                     </div>
                     <div :class="{openDivs: currentID == i}" class="colors">
-                        <div :class="{selected: oneNote.color == 'blue'}" @click="changeColor(i, 'blue')"
+                        <div :class="{selected: oneNote.color == 'blue'}" @click="changeColor(i, oneNote, 'blue')"
                              class="circle blue"></div>
-                        <div :class="{selected: oneNote.color == 'yellow'}" @click="changeColor(i, 'yellow')"
+                        <div :class="{selected: oneNote.color == 'yellow'}" @click="changeColor(i, oneNote, 'yellow')"
                              class="circle yellow"></div>
-                        <div :class="{selected: oneNote.color == 'red'}" @click="changeColor(i, 'red')"
+                        <div :class="{selected: oneNote.color == 'red'}" @click="changeColor(i, oneNote, 'red')"
                              class="circle red"></div>
-                        <div :class="{selected: oneNote.color == 'purple'}" @click="changeColor(i, 'purple')"
+                        <div :class="{selected: oneNote.color == 'purple'}" @click="changeColor(i, oneNote, 'purple')"
                              class="circle purple"></div>
-                        <div :class="{selected: oneNote.color == 'white'}" @click="changeColor(i, 'white')"
+                        <div :class="{selected: oneNote.color == 'white'}" @click="changeColor(i, oneNote, 'white')"
                              class="circle whiteCircle"></div>
                     </div>
                 </div>
@@ -133,9 +134,16 @@
             }
         },
         methods: {
-            todoSave: function (notes) {
-                //console.log(JSON.stringify(notes));
-                /*localStorage.setItem('notes', JSON.stringify(notes));*/
+            async updatePost(note) {
+                await NotesServices.updatePost({
+                    id: note._id,
+                    color: note.color,
+                    completed: note.completed,
+                    date: note.date,
+                    long: note.long,
+                    text: note.text,
+                    title: note.title
+                });
             },
             modifiedText: function (id) {
                 // Detect Links
@@ -180,9 +188,9 @@
                     NotesServices.deleteNote(id)
                 }
             },
-            changeColor: function (id, color) {
-                this.allNotes[id].color = color;
-                /*this.todoSave(this.notes);*/
+            changeColor: function (id, note, color) {
+                note.color = color;
+                this.updatePost(note);
                 this.currentID = -2;
                 this.opened = false;
             },
@@ -190,11 +198,10 @@
                 this.edit = true;
                 this.editId = i;
             },
-            updateNote: function (id, note) {
+            updateNote: function (note) {
                 note.date = new Date();
                 note.long = note.text.length > 106;
-                this.allNotes[id] = note;
-                this.todoSave(this.allNotes);
+                this.updatePost(note);
                 this.editId = -1;
                 this.edit = false;
             },
@@ -207,15 +214,15 @@
                     this.idToExpand = -1;
                 }
             },
-            finishTask: function (id) {
-                if (this.allNotes[id].completed === false) {
-                    this.allNotes[id].completed = true;
-                    this.allNotes[id].date = new Date();
+            finishTask: function (note) {
+                if (note.completed === false) {
+                    note.completed = true;
+                    note.date = new Date();
                 } else {
-                    this.allNotes[id].completed = false;
-                    this.allNotes[id].date = new Date();
+                    note.completed = false;
+                    note.date = new Date();
                 }
-                this.todoSave(this.allNotes);
+                this.updatePost(note);
             }
         }
     }

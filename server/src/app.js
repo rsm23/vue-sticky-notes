@@ -56,6 +56,29 @@ app.get('/notes', (req, res) => {
     }).sort({_id:-1})
 });
 
+// Update a note
+app.put('/notes/:id', (req, res) => {
+    var db = req.db;
+    Note.findById(req.params.id, 'title text color date long completed', (error, note) => {
+        if (error) { console.error(error); }
+        console.log(req.body);
+        note.title = req.body.title;
+        note.text = req.body.text;
+        note.color = req.body.color;
+        note.date = req.body.date;
+        note.long = req.body.long;
+        note.completed = req.body.completed;
+        note.save(function (error) {
+            if (error) {
+                console.log(error)
+            }
+            res.send({
+                success: true
+            })
+        })
+    })
+})
+
 // Delete a note
 app.delete('/notes/:id', (req, res) => {
     var db = req.db;
@@ -68,5 +91,5 @@ app.delete('/notes/:id', (req, res) => {
             success: true
         })
     })
-})
+});
 app.listen(process.env.PORT || 8081);

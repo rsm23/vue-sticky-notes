@@ -7,6 +7,9 @@ export default {
     addNote(params) {
         return Api().post('notes', params)
     },
+    updatePost (params) {
+        return Api().put('notes/' + params.id, params)
+    },
     deleteNote (id) {
         return Api().delete('notes/' + id)
     }
