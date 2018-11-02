@@ -20,7 +20,7 @@
                                 d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line
                                 x1="12" x2="12" y1="11" y2="17"></line><line x1="9" x2="15" y1="14"
                                                                              y2="14"></line></svg></span>
-                            <small class="block text-center">Today: {{ todayDate }}</small>
+                            <small class="block text-center">Today: {{ new Date() | moment("dddd, MMMM Do YYYY") }}</small>
                             <span @click="insertNote" class="cursor-pointer"><svg class="feather feather-check"
                                                                                   fill="none" height="24"
                                                                                   stroke="currentColor"
@@ -48,12 +48,13 @@
             </div>
         </div>
         <!--Start The Loop-->
-        <SingleNote :all-notes="theNotes"></SingleNote>
+        <SingleNote :all-notes="allNotes"></SingleNote>
     </div>
 </template>
 
 <script>
     import SingleNote from './SingleNote'
+    import NotesServices from '@/services/NotesServices'
 
     export default {
         name: 'StickyNotes',
@@ -62,7 +63,7 @@
         },
         data: function () {
             return {
-                theNotes: this.todoFetch(),
+                allNotes : [],
                 // The Note Props
                 noteTitle: '',
                 noteColor: 'white',
@@ -78,30 +79,16 @@
             }
         },
         computed: {
-            // Define The Date
-            todayDate: function () {
-                let d = new Date();
-                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                let today = d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
-
-                return today;
-            },
-
             // Check if the note is longer than 106 letters
             longNote: function () {
-                if (this.noteText.length > 106) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.noteText.length > 106;
             },
 
             // Collect Note Data
             newNote: function () {
                 return {
-                    id: (this.theNotes.length + 1),
                     title: this.noteTitle,
-                    date: this.todayDate,
+                    date: new Date(),
                     text: this.noteText,
                     color: this.noteColor,
                     long: this.longNote,
@@ -111,38 +98,37 @@
         },
         mounted() {
             this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
+            this.getNotes()
         },
         methods: {
+            async getNotes () {
+                const response = await NotesServices.fetchNotes()
+                this.allNotes = response.data.notes
+            },
             // Toggle The Effect
             toggleTransition: function (id) {
                 if (id >= 0) {
                     this.currentID = id;
-                } else if (id == -1) {
+                } else if (id === -1) {
                     this.currentID = -1;
                 }
 
-                if (this.opened == false) {
+                if (this.opened === false) {
                     this.opened = true;
                 } else {
                     this.currentID = -2;
                     this.opened = false;
                 }
             },
-            // To-Do Storage
-            todoFetch: function () {
-                let notes = JSON.parse(localStorage.getItem('notes') || '[]');
-                //console.log(notes);
-                return notes;
-            },
-            todoSave: function (notes) {
-                //console.log(JSON.stringify(notes));
-                localStorage.setItem('notes', JSON.stringify(notes));
+            async todoSave (note) {
+                await NotesServices.addNote({
+                    note
+                })
             },
             insertNote: function () {
                 if (this.noteTitle !== '' && this.noteText !== '') {
-                    this.theNotes.push(this.newNote);
-                    this.todoSave(this.theNotes);
-
+                    this.allNotes.unshift(this.newNote);
+                    this.todoSave(this.newNote);
                     // Remove!
                     this.noteTitle = '';
                     this.noteText = '';

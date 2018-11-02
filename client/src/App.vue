@@ -1,7 +1,7 @@
 <template>
     <div id="app" class="bg-grey-light">
         <Header />
-        <StickyNotes msg="Welcome to Your Vue.js App"/>
+        <router-view/>
     </div>
 </template>
 

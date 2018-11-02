@@ -1,34 +1,36 @@
 <template>
     <div class="px-4">
-        <section class="flex -mx-4 flex-wrap">
-            <div :key="oneNote.i" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6 flex flex-col"
+        <section class="flex -mx-4 flex-wrap" v-if="allNotes.length > 0">
+            <div :key="oneNote.i" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6"
                  v-bind:class="[oneNote.color]" v-for="(oneNote, i) in allNotes">
                 <div class="relative" v-if="oneNote.text">
-                    <span @click="finishTask(i)" class="absolute pin-r cursor-pointer" id="check">
+                    <span @click="finishTask(i)" class="absolute cursor-pointer" id="check">
                         <svg :class="{'checked': oneNote.completed}" viewBox="0 0 100 100">
                             <path
-                            class="frame"
-                            d="m 59.977808,90.908624 h -43.310291 c -4.057278,0 -7.3236058,-3.266329 -7.3236058,-7.323606 v -65.91245 c 0,-4.057278 3.2663278,-7.323606 7.3236058,-7.323606 h 66.417531 c 4.057278,0 7.323606,3.266328 7.323606,7.323606 v 21.592009 44.320441 c 0,4.057277 -3.266328,7.323606 -7.323606,7.323606 h -23.10724"/>
+                                    class="frame"
+                                    d="m 59.977808,90.908624 h -43.310291 c -4.057278,0 -7.3236058,-3.266329 -7.3236058,-7.323606 v -65.91245 c 0,-4.057278 3.2663278,-7.323606 7.3236058,-7.323606 h 66.417531 c 4.057278,0 7.323606,3.266328 7.323606,7.323606 v 21.592009 44.320441 c 0,4.057277 -3.266328,7.323606 -7.323606,7.323606 h -23.10724"/>
                             <path
-                            class="check"
-                            d="m 90.408654,39.264577 v 44.320441 c 0,4.057277 -3.266328,7.323606 -7.323606,7.323606 h -23.10724"/>
+                                    class="check"
+                                    d="m 90.408654,39.264577 v 44.320441 c 0,4.057277 -3.266328,7.323606 -7.323606,7.323606 h -23.10724"/>
                         </svg>
                     </span>
                     <input autofocus="true"
-                           class="appearance-none bg-transparent border-none w-full text-grey-darker mr-3 py-1 px-2 leading-tight focus:outline-none"
+                           class="appearance-none bg-transparent border-none w-full mr-3 py-2 focus:outline-none"
                            placeholder="Type a title ..." style="max-width: 92%;"
                            type="text"
                            v-if="edit && editId == i" v-model="oneNote.title">
-                    <h2 :class="{isDone: oneNote.completed}" class="overflow-auto" style="max-width: 92%;"
+                    <h2 :class="{isDone: oneNote.completed}" class="fadeText overflow-auto mb-3"
+                        style="max-width: 92%;overflow: auto; white-space:nowrap;"
                         v-else>{{oneNote.title}}</h2>
-                    <small class="mt-4 text-sm text-left" :class="{isDone: oneNote.completed}">Last update: {{oneNote.date}}</small>
+                    <small :class="{isDone: oneNote.completed}" class="my-4 text-left">Last update: {{oneNote.date | moment("dddd, MMMM Do YYYY") }}
+                    </small>
                     <hr>
-                    <textarea class="w-full shadow-inner p-4 border-0 rounded bg-transparent"
+                    <textarea class="w-full shadow-inner p-2 border-0 rounded bg-transparent"
                               placeholder="Type a description ..."
                               v-if="edit && editId == i"
                               v-model="oneNote.text"></textarea>
                     <p :class="{expand: idToExpand == i, isDone: oneNote.completed}"
-                       class="text-left overflow-x-auto h-16 break-words"
+                       class="text-left overflow-x-auto h-16 break-words mt-4"
                        v-else v-html="modifiedText(i)"></p>
                     <div :class="(idToExpand == i) ? 'mt-2' : 'mt-10' " class="flex justify-between">
                         <span @click="updateNote(i, oneNote)" class="cursor-pointer" v-if="edit && editId == i"><svg
@@ -102,6 +104,7 @@
 </template>
 
 <script>
+
     export default {
         name: 'SingleNote',
         props: ['allNotes'],
@@ -127,23 +130,9 @@
             }
         },
         methods: {
-            // Define The Date
-            todayDate: function () {
-                let d = new Date();
-                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                let today = d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
-
-                return today;
-            },
-            // To-Do Storage
-            todoFetch: function () {
-                let notes = JSON.parse(localStorage.getItem('notes') || '[]');
-                //console.log(notes);
-                return notes;
-            },
             todoSave: function (notes) {
                 //console.log(JSON.stringify(notes));
-                localStorage.setItem('notes', JSON.stringify(notes));
+                /*localStorage.setItem('notes', JSON.stringify(notes));*/
             },
             modifiedText: function (id) {
                 // Detect Links
@@ -190,7 +179,7 @@
             },
             changeColor: function (id, color) {
                 this.allNotes[id].color = color;
-                this.todoSave(this.allNotes);
+                /*this.todoSave(this.notes);*/
                 this.currentID = -2;
                 this.opened = false;
             },
@@ -199,19 +188,15 @@
                 this.editId = i;
             },
             updateNote: function (id, note) {
-                note.date = this.todayDate();
-                if (note.text.length > 106) {
-                    note.long = true;
-                } else {
-                    note.long = false;
-                }
+                note.date = new Date();
+                note.long = note.text.length > 106;
                 this.allNotes[id] = note;
                 this.todoSave(this.allNotes);
                 this.editId = -1;
                 this.edit = false;
             },
-            expandNote: function (id) {
-                if (this.expanded == false) {
+            expandNote: (id) => {
+                if (this.expanded === false) {
                     this.idToExpand = id;
                     this.expanded = true;
                 } else {
@@ -220,12 +205,12 @@
                 }
             },
             finishTask: function (id) {
-                if (this.allNotes[id].completed == false) {
+                if (this.allNotes[id].completed === false) {
                     this.allNotes[id].completed = true;
-                    this.allNotes[id].date = this.todayDate();
+                    this.allNotes[id].date = new Date();
                 } else {
                     this.allNotes[id].completed = false;
-                    this.allNotes[id].date = this.todayDate();
+                    this.allNotes[id].date = new Date();
                 }
                 this.todoSave(this.allNotes);
             }
@@ -244,27 +229,37 @@
         box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
     }
 
+    #check {
+        right: -4px;
+        top: 2px;
+    }
+
     #check svg {
-        height: 24px;
-        width: 24px;
+        height: 26px;
+        width: 26px;
     }
+
     #check path {
-        fill:none;
-        stroke-linecap:round;
-        stroke-width:8;
-        stroke:#2C3E50;
+        fill: none;
+        stroke-linecap: round;
+        stroke-width: 8;
+        stroke: #2C3E50;
     }
+
     #check .frame {
         stroke-dasharray: 232 311;
         transition: stroke-dasharray 300ms;
     }
+
     #check .check {
         transition: transform 400ms 50ms;
     }
+
     #check .checked .frame {
         stroke-dasharray: 311 311;
         transition: stroke-dasharray 400ms 50ms;
     }
+
     #check .checked .check {
         transform: translateX(16%) translateY(-48%) rotate(30deg);
         transition: transform 300ms;
