@@ -6,5 +6,8 @@ export default {
     },
     addNote(params) {
         return Api().post('notes', params)
+    },
+    deleteNote (id) {
+        return Api().delete('notes/' + id)
     }
 }

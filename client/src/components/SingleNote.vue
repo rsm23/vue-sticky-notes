@@ -1,7 +1,7 @@
 <template>
     <div class="px-4">
         <section class="flex -mx-4 flex-wrap" v-if="allNotes.length > 0">
-            <div :key="oneNote.i" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6"
+            <div :key="oneNote._id" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6"
                  v-bind:class="[oneNote.color]" v-for="(oneNote, i) in allNotes">
                 <div class="relative" v-if="oneNote.text">
                     <span @click="finishTask(i)" class="absolute cursor-pointer" id="check">
@@ -18,21 +18,22 @@
                            class="appearance-none bg-transparent border-none w-full mr-3 py-2 focus:outline-none"
                            placeholder="Type a title ..." style="max-width: 92%;"
                            type="text"
-                           v-if="edit && editId == i" v-model="oneNote.title">
+                           v-if="edit && editId === oneNote._id" v-model="oneNote.title">
                     <h2 :class="{isDone: oneNote.completed}" class="fadeText overflow-auto mb-3"
                         style="max-width: 92%;overflow: auto; white-space:nowrap;"
                         v-else>{{oneNote.title}}</h2>
-                    <small :class="{isDone: oneNote.completed}" class="my-4 text-left">Last update: {{oneNote.date | moment("dddd, MMMM Do YYYY") }}
+                    <small :class="{isDone: oneNote.completed}" class="my-4 text-left">Last update: {{oneNote.date |
+                        moment("dddd, MMMM Do YYYY") }}
                     </small>
                     <hr>
                     <textarea class="w-full shadow-inner p-2 border-0 rounded bg-transparent"
                               placeholder="Type a description ..."
-                              v-if="edit && editId == i"
+                              v-if="edit && editId === oneNote._id"
                               v-model="oneNote.text"></textarea>
-                    <p :class="{expand: idToExpand == i, isDone: oneNote.completed}"
+                    <p :class="{expand: idToExpand === oneNote._id, isDone: oneNote.completed}"
                        class="text-left overflow-x-auto h-16 break-words mt-4"
                        v-else v-html="modifiedText(i)"></p>
-                    <div :class="(idToExpand == i) ? 'mt-2' : 'mt-10' " class="flex justify-between">
+                    <div :class="(idToExpand === oneNote._id) ? 'mt-2' : 'mt-10' " class="flex justify-between">
                         <span @click="updateNote(i, oneNote)" class="cursor-pointer" v-if="edit && editId == i"><svg
                                 class="feather feather-check"
                                 fill="none" height="24"
@@ -62,14 +63,15 @@
                                 d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line
                                 x1="12" x2="12" y1="11" y2="17"></line><line x1="9" x2="15" y1="14"
                                                                              y2="14"></line></svg></span>
-                        <span @click="deleteNote(i)" class="cursor-pointer"><svg class="feather feather-trash-2"
-                                                                                 fill="none" height="24"
-                                                                                 stroke="currentColor"
-                                                                                 stroke-linecap="round"
-                                                                                 stroke-linejoin="round"
-                                                                                 stroke-width="2" viewBox="0 0 24 24"
-                                                                                 width="24"
-                                                                                 xmlns="http://www.w3.org/2000/svg"><polyline
+                        <span @click="deleteNote(i, oneNote._id)" class="cursor-pointer"><svg
+                                class="feather feather-trash-2"
+                                fill="none" height="24"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2" viewBox="0 0 24 24"
+                                width="24"
+                                xmlns="http://www.w3.org/2000/svg"><polyline
                                 points="3 6 5 6 21 6"></polyline><path
                                 d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line
                                 x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11"
@@ -104,6 +106,7 @@
 </template>
 
 <script>
+    import NotesServices from '@/services/NotesServices'
 
     export default {
         name: 'SingleNote',
@@ -158,11 +161,11 @@
             toggleTransition: function (id) {
                 if (id >= 0) {
                     this.currentID = id;
-                } else if (id == -1) {
+                } else if (id === -1) {
                     this.currentID = -1;
                 }
 
-                if (this.opened == false) {
+                if (this.opened === false) {
                     this.opened = true;
                 } else {
                     this.currentID = -2;
@@ -170,11 +173,11 @@
                 }
             },
             // Note Processes
-            deleteNote: function (id) {
+            deleteNote: function (number, id) {
                 this.confirm = confirm("Are You Sure You Want To Delete It ?");
                 if (this.confirm) {
-                    this.allNotes.splice(id, 1);
-                    this.todoSave(this.allNotes);
+                    this.allNotes.splice(number, 1);
+                    NotesServices.deleteNote(id)
                 }
             },
             changeColor: function (id, color) {

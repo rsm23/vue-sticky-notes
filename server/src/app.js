@@ -56,4 +56,17 @@ app.get('/notes', (req, res) => {
     }).sort({_id:-1})
 });
 
+// Delete a note
+app.delete('/notes/:id', (req, res) => {
+    var db = req.db;
+    Note.remove({
+        _id: req.params.id
+    }, function(err, note){
+        if (err)
+            res.send(err)
+        res.send({
+            success: true
+        })
+    })
+})
 app.listen(process.env.PORT || 8081);
