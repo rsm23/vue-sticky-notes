@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg-grey-lightest">
         <div class="container mx-auto pt-5">
             <StickyNotes/>
         </div>

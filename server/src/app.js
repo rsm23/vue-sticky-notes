@@ -2,19 +2,98 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
-let mongoose = require('mongoose');
-let Note = require('../models/Note');
+const mongoose = require('mongoose');
+const User = require('../models/User');
+const Note = require('../models/Note');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/notes');
+mongoose.connect('mongodb://localhost:27017/notes', {useNewUrlParser: true, useCreateIndex: true});
 let db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
 db.once("open", (callback) => {
     console.log("Connection Succeeded");
+});
+
+function jwtSignUser (user) {
+    const ONE_WEEK = 60 * 60 * 24 * 7;
+    return jwt.sign(user, 'secret', {
+        expiresIn: ONE_WEEK
+    })
+}
+
+//POST route for updating data
+app.post('/users', function (req, res, next) {
+    // confirm that user typed same password twice
+    if (req.body.password !== req.body.passwordConf) {
+        let err = new Error('Passwords do not match.');
+        err.status = 400;
+        res.send("passwords dont match");
+        return next(err);
+    }
+
+    if (req.body.name &&
+        req.body.email &&
+        req.body.username &&
+        req.body.password &&
+        req.body.passwordConf) {
+
+        let userData = {
+            name: req.body.name,
+            email: req.body.email,
+            username: req.body.username,
+            password: req.body.password,
+            passwordConf: req.body.passwordConf,
+        };
+
+        User.create(userData, function (error, user) {
+            if (error) {
+                return next(error);
+            } else {
+                res.send({
+                    user : user.toJSON(),
+                    token: jwtSignUser(user),
+                })
+            }
+        });
+
+    } else if (req.body.logemail && req.body.logpassword) {
+        User.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
+            if (error || !user) {
+                return res.status(403).send({
+                    error : 'Wrong email or password.'
+                });
+            } else {
+                let jUser = user.toJSON();
+                res.send({
+                    user : jUser,
+                    token: jwtSignUser(jUser),
+                })
+            }
+        });
+    } else {
+        let err = new Error('All fields required.');
+        err.status = 400;
+        return next(err);
+    }
+});
+
+// GET for logout logout
+app.get('/logout', function (req, res, next) {
+    if (req.session) {
+        // delete session object
+        req.session.destroy(function (err) {
+            if (err) {
+                return next(err);
+            } else {
+                return res.redirect('/');
+            }
+        });
+    }
 });
 
 // Add new note
@@ -49,18 +128,22 @@ app.post('/notes', (req, res) => {
 // Fetch all notes
 app.get('/notes', (req, res) => {
     Note.find({}, 'title text color date long completed', (error, notes) => {
-        if (error) { console.error(error); }
+        if (error) {
+            console.error(error);
+        }
         res.send({
             notes: notes
         })
-    }).sort({_id:-1})
+    }).sort({_id: -1})
 });
 
 // Update a note
 app.put('/notes/:id', (req, res) => {
     var db = req.db;
     Note.findById(req.params.id, 'title text color date long completed', (error, note) => {
-        if (error) { console.error(error); }
+        if (error) {
+            console.error(error);
+        }
         console.log(req.body);
         note.title = req.body.title;
         note.text = req.body.text;
@@ -77,16 +160,16 @@ app.put('/notes/:id', (req, res) => {
             })
         })
     })
-})
+});
 
 // Delete a note
 app.delete('/notes/:id', (req, res) => {
     var db = req.db;
     Note.remove({
         _id: req.params.id
-    }, function(err, note){
+    }, function (err, note) {
         if (err)
-            res.send(err)
+            res.send(err);
         res.send({
             success: true
         })

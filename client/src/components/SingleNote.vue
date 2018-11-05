@@ -1,5 +1,5 @@
 <template>
-    <div class="px-4">
+    <div class="px-4 rounded-lg overflow-hidden">
         <section class="flex -mx-4 flex-wrap" v-if="allNotes.length > 0">
             <div :key="oneNote._id" class="md:w-1/4 sm:w-1/2 shadow-lg px-4 py-6"
                  v-bind:class="[oneNote.color]" v-for="(oneNote, i) in allNotes">
@@ -134,8 +134,8 @@
             }
         },
         methods: {
-            async updatePost(note) {
-                await NotesServices.updatePost({
+            async updateTodo(note) {
+                await NotesServices.updateTodo({
                     id: note._id,
                     color: note.color,
                     completed: note.completed,
@@ -201,7 +201,7 @@
             updateNote: function (note) {
                 note.date = new Date();
                 note.long = note.text.length > 106;
-                this.updatePost(note);
+                this.updateTodo(note);
                 this.editId = -1;
                 this.edit = false;
             },

@@ -11,9 +11,11 @@
   "author": "Rahmani Seif El Moulouk",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.3.8",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.5"
