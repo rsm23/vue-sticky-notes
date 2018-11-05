@@ -75,7 +75,12 @@
                 // Temporary IDs
                 currentID: -2,
                 editId: -1,
-                idToCopy: -1,
+                idToCopy: -1
+            }
+        },
+        beforeCreate() {
+            if(!this.$store.state.isUserLoggedIn) {
+                this.$router.push('/login');
             }
         },
         computed: {
@@ -92,17 +97,18 @@
                     text: this.noteText,
                     color: this.noteColor,
                     long: this.longNote,
-                    completed: false
+                    completed: false,
+                    userId: this.$store.state.user._id
                 }
             }
         },
         mounted() {
             this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
-            this.getNotes()
+            this.getNotes();
         },
         methods: {
             async getNotes () {
-                const response = await NotesServices.fetchNotes()
+                const response = await NotesServices.fetchNotes(this.$store.state.user._id)
                 this.allNotes = response.data.notes
             },
             // Toggle The Effect

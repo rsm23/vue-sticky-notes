@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto py-24">
-        <form class="w-full" v-on:submitsubmit.prevent="handleRegister">
+        <form class="w-full" v-on:submit.prevent="handleRegister">
             <div class="flex flex-wrap mb-6">
                 <div class="w-full md:w-1/2 px-3">
                     <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
@@ -101,9 +101,9 @@
                             password: this.password,
                             passwordConf: this.passwordConf
                         }).then((response) => {
-                            if (response.data.success) {
-                                this.$router.push('/')
-                            }
+                            this.$store.dispatch('setToken', response.data.token);
+                            this.$store.dispatch('setUser', response.data.user);
+                            this.$router.push('/');
                         });
                         return;
                     }

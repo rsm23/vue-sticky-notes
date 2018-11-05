@@ -135,14 +135,15 @@
         },
         methods: {
             async updateTodo(note) {
-                await NotesServices.updateTodo({
+                await NotesServices.updateNote({
                     id: note._id,
                     color: note.color,
                     completed: note.completed,
                     date: note.date,
                     long: note.long,
                     text: note.text,
-                    title: note.title
+                    title: note.title,
+                    userId: this.$store.state.user._id
                 });
             },
             modifiedText: function (id) {
@@ -190,7 +191,7 @@
             },
             changeColor: function (id, note, color) {
                 note.color = color;
-                this.updatePost(note);
+                this.updateNote(note);
                 this.currentID = -2;
                 this.opened = false;
             },
@@ -222,7 +223,7 @@
                     note.completed = false;
                     note.date = new Date();
                 }
-                this.updatePost(note);
+                this.updateTodo(note);
             }
         }
     }

@@ -52,11 +52,15 @@ app.post('/users', function (req, res, next) {
 
         User.create(userData, function (error, user) {
             if (error) {
-                return next(error);
+                return res.status(500).send({
+                    error : 'Something went wrong.'
+                });
             } else {
+                console.log("here");
+                let jUser = user.toJSON();
                 res.send({
-                    user : user.toJSON(),
-                    token: jwtSignUser(user),
+                    user : jUser,
+                    token: jwtSignUser(jUser),
                 })
             }
         });
@@ -82,20 +86,6 @@ app.post('/users', function (req, res, next) {
     }
 });
 
-// GET for logout logout
-app.get('/logout', function (req, res, next) {
-    if (req.session) {
-        // delete session object
-        req.session.destroy(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                return res.redirect('/');
-            }
-        });
-    }
-});
-
 // Add new note
 app.post('/notes', (req, res) => {
     let db = req.db;
@@ -105,6 +95,7 @@ app.post('/notes', (req, res) => {
     let date = req.body.note.date;
     let long = req.body.note.long;
     let completed = req.body.note.completed;
+    let userId = req.body.note.userId;
     let new_note = new Note({
         color,
         completed,
@@ -112,6 +103,7 @@ app.post('/notes', (req, res) => {
         long,
         text,
         title,
+        userId
     });
 
     new_note.save((error) => {
@@ -127,7 +119,8 @@ app.post('/notes', (req, res) => {
 
 // Fetch all notes
 app.get('/notes', (req, res) => {
-    Note.find({}, 'title text color date long completed', (error, notes) => {
+    let id = req.query.id;
+    Note.find({userId : id}, 'title text color date long completed', (error, notes) => {
         if (error) {
             console.error(error);
         }
@@ -140,7 +133,7 @@ app.get('/notes', (req, res) => {
 // Update a note
 app.put('/notes/:id', (req, res) => {
     var db = req.db;
-    Note.findById(req.params.id, 'title text color date long completed', (error, note) => {
+    Note.findById(req.params.id, 'title text color date long completed userId', (error, note) => {
         if (error) {
             console.error(error);
         }
@@ -151,6 +144,7 @@ app.put('/notes/:id', (req, res) => {
         note.date = req.body.date;
         note.long = req.body.long;
         note.completed = req.body.completed;
+        note.userId = req.body.userId;
         note.save(function (error) {
             if (error) {
                 console.log(error)

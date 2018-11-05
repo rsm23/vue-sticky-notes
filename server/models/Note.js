@@ -2,12 +2,34 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var NoteSchema = new Schema({
-    color: String,
-    completed: Boolean,
-    date: Date,
-    long: Boolean,
-    text: String,
-    title: String
+    color: {
+        type: String,
+        required: true
+    },
+    completed: {
+        type: Boolean,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    long: {
+        type: Boolean,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: String,
+        required: true
+    }
 });
 
 let Note = mongoose.model("Note", NoteSchema);
