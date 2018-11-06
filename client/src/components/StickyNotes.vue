@@ -7,8 +7,7 @@
                     <div class="single-note add-note">
                         <input class="appearance-none bg-transparent border-b border-b-2 border-grey-ligher w-full text-grey-darker p-4 focus:outline-none mb-1"
                                placeholder="Type a title ..." type="text" v-model="noteTitle">
-                        <textarea @input="textareaResize"
-                                  class="w-full p-4 border-0 bg-transparent focus:outline-none text-grey-darker "
+                        <textarea class="w-full p-4 border-0 bg-transparent focus:outline-none text-grey-darker "
                                   placeholder="Type a description ..." ref="textarea" v-model="noteText"></textarea>
                         <div class="flex justify-around">
                         <span @click="toggleTransition(-1)" class="cursor-pointer"><svg
@@ -20,7 +19,8 @@
                                 d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line
                                 x1="12" x2="12" y1="11" y2="17"></line><line x1="9" x2="15" y1="14"
                                                                              y2="14"></line></svg></span>
-                            <small class="block text-center">Today: {{ new Date() | moment("dddd, MMMM Do YYYY") }}</small>
+                            <small class="block text-center">Today: {{ new Date() | moment("dddd, MMMM Do YYYY") }}
+                            </small>
                             <span @click="insertNote" class="cursor-pointer"><svg class="feather feather-check"
                                                                                   fill="none" height="24"
                                                                                   stroke="currentColor"
@@ -63,7 +63,7 @@
         },
         data: function () {
             return {
-                allNotes : [],
+                allNotes: [],
                 // The Note Props
                 noteTitle: '',
                 noteColor: 'white',
@@ -76,11 +76,6 @@
                 currentID: -2,
                 editId: -1,
                 idToCopy: -1
-            }
-        },
-        beforeCreate() {
-            if(!this.$store.state.isUserLoggedIn) {
-                this.$router.push('/login');
             }
         },
         computed: {
@@ -98,17 +93,16 @@
                     color: this.noteColor,
                     long: this.longNote,
                     completed: false,
-                    userId: this.$store.state.user._id
+                    userId: this.$store.state.user._id || null
                 }
             }
         },
         mounted() {
-            this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
             this.getNotes();
         },
         methods: {
-            async getNotes () {
-                const response = await NotesServices.fetchNotes(this.$store.state.user._id)
+            async getNotes() {
+                const response = await NotesServices.fetchNotes(this.$store.state.user._id || null);
                 this.allNotes = response.data.notes
             },
             // Toggle The Effect
@@ -126,7 +120,7 @@
                     this.opened = false;
                 }
             },
-            async todoSave (note) {
+            async todoSave(note) {
                 await NotesServices.addNote({
                     note
                 })
@@ -140,11 +134,7 @@
                     this.noteText = '';
                     this.noteColor = '#fff';
                     this.currentID = -2;
-                    this.$refs.textarea.style.minHeight = 'inherit';
                 }
-            },
-            textareaResize() {
-                this.$refs.textarea.style.minHeight = this.$refs.textarea.scrollHeight + 'px';
             }
         }
     }

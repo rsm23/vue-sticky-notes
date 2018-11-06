@@ -1,5 +1,5 @@
 <template>
-    <div class="container mx-auto py-24">
+    <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-xs mx-auto">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post"
                   v-on:submit.prevent="handleLogin">

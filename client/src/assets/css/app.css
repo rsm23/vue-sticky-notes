@@ -77,3 +77,13 @@
     background-color: #fff !important;
     border: 1px solid #ccc;
 }
+
+#banner {
+    background-color: #fff;
+    background-image: url('/img/bg.svg');
+}
+
+.title {
+    background-color: #f6993f;
+    background-image: url('/img/bgTitle.svg');
+}

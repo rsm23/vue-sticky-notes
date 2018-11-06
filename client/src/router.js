@@ -3,17 +3,23 @@ import Router from 'vue-router'
 import Home from './views/Home'
 import Register from './views/Register'
 import Login from './views/Login'
+import store from './store'
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+let router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: Home,
+            beforeEnter: (to, from, next) => {
+                if (store.state.isUserLoggedIn) {
+                    next();
+                } else next('/login');
+            }
         },
         {
             path: '/register',
@@ -27,7 +33,14 @@ export default new Router({
         },
         {
             path: '*',
-            redirect: '/'
+            redirect: '/',
+            beforeEnter: (to, from, next) => {
+                if (store.state.isUserLoggedIn) {
+                    next();
+                } else next('/login');
+            }
         }
     ]
-})
+});
+
+export default router;
