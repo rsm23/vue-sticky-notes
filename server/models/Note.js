@@ -1,7 +1,7 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+let mongoose = require("mongoose");
+let Schema = mongoose.Schema;
 
-var NoteSchema = new Schema({
+let NoteSchema = new Schema({
     color: {
         type: String,
         required: true

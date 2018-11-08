@@ -7,7 +7,7 @@
 
 <script>
     import StickyNotes from './components/StickyNotes'
-    import Header from './components/layout/Header'
+    import Header from './views/layout/Header'
 
     export default {
         name: 'app',

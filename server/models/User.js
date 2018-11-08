@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+let mongoose = require('mongoose');
+let bcrypt = require('bcrypt');
 
-var UserSchema = new mongoose.Schema({
+let UserSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -18,6 +18,12 @@ var UserSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    about: {
+        type: String
+    },
+    avatar: {
+        type: String
+    },
     password: {
         type: String,
         required: true,
@@ -26,12 +32,12 @@ var UserSchema = new mongoose.Schema({
 
 //authenticate input against database
 UserSchema.statics.authenticate = function (email, password, callback) {
-    User.findOne({ email: email })
+    User.findOne({email: email})
         .exec(function (err, user) {
             if (err) {
                 return callback(err)
             } else if (!user) {
-                var err = new Error('User not found.');
+                let err = new Error('User not found.');
                 err.status = 401;
                 return callback(err);
             }
@@ -43,20 +49,8 @@ UserSchema.statics.authenticate = function (email, password, callback) {
                 }
             })
         });
-}
-
-//hashing a password before saving it to the database
-UserSchema.pre('save', function (next) {
-    var user = this;
-    bcrypt.hash(user.password, 10, function (err, hash) {
-        if (err) {
-            return next(err);
-        }
-        user.password = hash;
-        next();
-    })
-});
+};
 
 
-var User = mongoose.model('User', UserSchema);
+let User = mongoose.model('User', UserSchema);
 module.exports = User;

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home'
 import Register from './views/Register'
 import Login from './views/Login'
+import Dashboard from './views/Dashboard'
 import store from './store'
 
 Vue.use(Router);
@@ -24,12 +25,32 @@ let router = new Router({
         {
             path: '/register',
             name: 'register',
-            component: Register
+            component: Register,
+            beforeEnter: (to, from, next) => {
+                if (!store.state.isUserLoggedIn) {
+                    next();
+                } else next('/');
+            }
         },
         {
             path: '/login',
             name: 'login',
-            component: Login
+            component: Login,
+            beforeEnter: (to, from, next) => {
+                if (!store.state.isUserLoggedIn) {
+                    next();
+                } else next('/');
+            }
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: Dashboard,
+            beforeEnter: (to, from, next) => {
+                if (store.state.isUserLoggedIn) {
+                    next();
+                } else next('/login');
+            }
         },
         {
             path: '*',

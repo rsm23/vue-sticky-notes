@@ -36,12 +36,11 @@
                         </router-link>
                     </div>
                     <div v-else>
-
-                        <a
+                        <router-link
                                 class="ml-3 no-underline inline-block text-sm px-4 py-2 leading-none border rounded text-orange bg-white border-white mt-4 sm:mt-0"
-                                href="#">
+                                to="/dashboard">
                             {{$store.state.user.name}}
-                        </a>
+                        </router-link>
 
                         <a
                                 class="ml-3 no-underline inline-block text-sm px-4 py-2 leading-none border rounded text-white bg-red-dark border-white mt-4 sm:mt-0"
