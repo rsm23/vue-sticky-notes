@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home'
 import Register from './views/Register'
 import Login from './views/Login'
+import Reset from './views/Reset'
 import Dashboard from './views/Dashboard'
 import store from './store'
 
@@ -36,6 +37,17 @@ let router = new Router({
             path: '/login',
             name: 'login',
             component: Login,
+            beforeEnter: (to, from, next) => {
+                if (!store.state.isUserLoggedIn) {
+                    next();
+                } else next('/');
+            }
+        },
+
+        {
+            path: '/reset',
+            name: 'reset',
+            component: Reset,
             beforeEnter: (to, from, next) => {
                 if (!store.state.isUserLoggedIn) {
                     next();

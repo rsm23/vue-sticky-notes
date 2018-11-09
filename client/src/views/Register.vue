@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-md mx-auto">
-            <form class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" v-on:submit.prevent="handleRegister">
+            <form class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" @submit.prevent="handleRegister">
                 <div class="flex flex-wrap mb-6">
                     <div class="w-full md:w-1/2 px-3">
                         <label class="block text-grey-darker text-sm font-bold mb-2"

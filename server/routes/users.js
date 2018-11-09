@@ -6,6 +6,7 @@ const multer = require('multer');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const sha1 = require('sha1');
+const nodeMailer = require('nodemailer');
 const BCRYPT_SALT_ROUNDS = 12;
 
 function jwtSignUser(user) {
@@ -61,8 +62,7 @@ router.post('/', function (req, res, next) {
             if (user) {
                 return res.status(401).send('That user already exists!');
             } else {
-
-                bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS, function (err,   hash) {
+                bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS, function (err, hash) {
                     user = new User({
                         name: req.body.name,
                         email: req.body.email,
@@ -74,7 +74,6 @@ router.post('/', function (req, res, next) {
                     user.save();
 
                     let jUser = user.toJSON();
-                    console.log(jUser);
                     res.send({
                         user: jUser,
                         token: jwtSignUser(jUser),
@@ -145,5 +144,50 @@ router.put('/avatar', upload.single("avatar"), function (req, res) {
         })
     })
 });
+
+router.post('/reset', function (req, res) {
+    let newPassword = Math.random().toString(36).substring(2, 9) + Math.random().toString(36).substring(2, 9);
+
+    User.findOne({email: req.body.email}, function (err, user) {
+        if (user) {
+            bcrypt.hash(newPassword, BCRYPT_SALT_ROUNDS, function (err, hash) {
+                user.password = hash;
+                user.save();
+                console.log(user)
+            });
+        } else {
+            console.log('User does not exist')
+        }
+    });
+    sendMail(req.body.email, newPassword)
+});
+
+let sendMail = function (userEmail, newPasswprd) {
+    const transporter = nodeMailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,  //true for 465 port, false for other ports
+        auth: {
+            user: '', //Your email
+            pass: '' // Your password
+        }
+    });
+
+    const mailOptions = {
+        from: '"Rahmani Seif El Moulouk" <rahmani@seifelmoulouk.com>', // sender address
+        to: userEmail, // list of receivers
+        subject: 'Your new password', // Subject line
+        text: 'Your new password is : ' + newPasswprd, // plain text body
+        html: `<p>Your ned password has been set to <b>${newPasswprd}</b></p><br />` // html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error)
+        } else {
+            console.log(info)
+        }
+    });
+};
 
 module.exports = router;

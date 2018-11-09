@@ -2,7 +2,7 @@
     <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-xs mx-auto">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post"
-                  v-on:submit.prevent="handleLogin">
+                  @submit.prevent="handleLogin">
                 <div class="mb-4">
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
                         Email
@@ -28,9 +28,9 @@
                             type="submit">
                         Sign In
                     </button>
-                    <a class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="#">
+                    <router-link class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" to="/reset">
                         Forgot Password?
-                    </a>
+                    </router-link>
                 </div>
             </form>
         </div>

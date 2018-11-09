@@ -9,5 +9,8 @@ export default {
     },
     updateDetails(params) {
         return Api().put('users', params)
+    },
+    reset(params) {
+        return Api().post('users/reset', params)
     }
 }

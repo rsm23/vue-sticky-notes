@@ -24,12 +24,18 @@
                     <div class="w-full border-r border-b border-l border-grey-light lg:border-l-0 lg:border-t lg:border-grey-light bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
                         <div class="mb-8 flex flex-wrap">
                             <div class="w-1/2 px-4">
-                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-                                       name="name" placeholder="Full Name" type="text" v-model="name">
+                                <input :class="(errors.has('name')) ? 'border-red' : 'border-grey-lighter'"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                                       name="name" placeholder="Full Name" type="text" v-model="name"
+                                       v-validate="'required'">
                             </div>
                             <div class="w-1/2 px-4">
-                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-                                       name="name" placeholder="Full Name" type="text" v-model="email">
+                                <input :class="(errors.has('email')) ? 'border-red' : 'border-grey-lighter'"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                                       name="email" placeholder="Full Name" type="email" v-model="email"
+                                       v-validate="'required|email'">
+                                <p class="text-red text-xs italic" v-if="errors.has('email')">{{ errors.first('email')
+                                    }}</p>
                             </div>
                             <div class="w-full px-4 mt-4">
                                 <textarea
@@ -79,17 +85,21 @@
             }
         },
         methods: {
-            async handleSubmit() {
-                await AuthServices.updateDetails({
-                    id: this.$store.state.user._id,
-                    name: this.name,
-                    email: this.email,
-                    about: this.about
-                }).then((response) => {
-                    this.$store.dispatch('setToken', response.data.token);
-                    this.$store.dispatch('setUser', response.data.user);
-                    this.$router.push('/dashboard');
-                });
+            handleSubmit() {
+                this.$validator.validateAll().then((result) => {
+                    if (result) {
+                        AuthServices.updateDetails({
+                            id: this.$store.state.user._id,
+                            name: this.name,
+                            email: this.email,
+                            about: this.about
+                        }).then((response) => {
+                            this.$store.dispatch('setToken', response.data.token);
+                            this.$store.dispatch('setUser', response.data.user);
+                            this.$router.push('/dashboard');
+                        });
+                    }
+                })
             },
             previewImage: function (event) {
                 let file = event.target.files;
