@@ -14,14 +14,14 @@
                 </div>
             </div>
 
-            <div class="container mx-auto lg:flex" v-if="edit">
+            <div class="container mx-auto lg:flex border border-grey-light lg:border-l-0 lg:border-t lg:border-grey-light rounded" v-if="edit">
                 <form @submit.prevent="handleSubmit" class="flex w-full" enctype="multipart/form-data" method="post">
                     <label :style="{ 'background-image': 'url(' + this.showAvatar + ')' , 'background-position-x':'-15px'}"
-                           class="h-48 h-auto w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden avatar relative">
+                           class="h-48 h-auto w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center bg-grey-light overflow-hidden avatar relative">
                         <input @change="previewImage" accept="image/*"
                                class="hidden" name='avatar' type='file'/>
                     </label>
-                    <div class="w-full border-r border-b border-l border-grey-light lg:border-l-0 lg:border-t lg:border-grey-light bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+                    <div class="w-full bg-white p-4 flex flex-col justify-between leading-normal">
                         <div class="mb-8 flex flex-wrap">
                             <div class="w-1/2 px-4">
                                 <input :class="(errors.has('name')) ? 'border-red' : 'border-grey-lighter'"

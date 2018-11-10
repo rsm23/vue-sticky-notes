@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-md mx-auto">
-            <form class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" @submit.prevent="handleReset">
+            <form @submit.prevent="handleReset" class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <div class="flex flex-wrap mb-6">
                     <div class="w-full px-3">
                         <label class="block text-grey-darker text-sm font-bold mb-2"
@@ -20,7 +20,8 @@
                             type="submit">
                         Send Email
                     </button>
-                    <router-link class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" to="/login">
+                    <router-link class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
+                                 to="/login">
                         Back to login
                     </router-link>
                 </div>
@@ -46,10 +47,13 @@
                     if (result) {
                         AuthServices.reset({
                             email: this.email
-                        })
-                        //     .then((response) => {
-                        //     this.$router.push('/');
-                        // });
+                        });
+                        this.$router.push({
+                            name: 'login', params: {
+                                refer: "reset",
+                                email: this.email
+                            }
+                        });
                         return;
                     }
 

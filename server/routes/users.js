@@ -153,7 +153,6 @@ router.post('/reset', function (req, res) {
             bcrypt.hash(newPassword, BCRYPT_SALT_ROUNDS, function (err, hash) {
                 user.password = hash;
                 user.save();
-                console.log(user)
             });
         } else {
             console.log('User does not exist')
@@ -178,7 +177,7 @@ let sendMail = function (userEmail, newPasswprd) {
         to: userEmail, // list of receivers
         subject: 'Your new password', // Subject line
         text: 'Your new password is : ' + newPasswprd, // plain text body
-        html: `<p>Your ned password has been set to <b>${newPasswprd}</b></p><br />` // html body
+        html: `<p>This message has been sent from <b>Vue Sticky Notes</b><hr /></p><p>Your new password has been set to <b>${newPasswprd}</b></p><br />` // html body
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

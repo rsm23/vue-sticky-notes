@@ -1,8 +1,8 @@
 <template>
     <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-xs mx-auto">
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" method="post"
-                  @submit.prevent="handleLogin">
+            <form @submit.prevent="handleLogin" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                  method="post">
                 <div class="mb-4">
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
                         Email
@@ -28,7 +28,8 @@
                             type="submit">
                         Sign In
                     </button>
-                    <router-link class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" to="/reset">
+                    <router-link class="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker"
+                                 to="/reset">
                         Forgot Password?
                     </router-link>
                 </div>
@@ -47,6 +48,18 @@
             return {
                 email: '',
                 password: ''
+            }
+        },
+        mounted() {
+            if (this.$route.params.refer === 'reset') {
+                this.$swal({
+                    title: '<strong>Password Reset</strong>',
+                    type: 'info',
+                    html:
+                        'Please keep in mind that if <b>' + this.$route.params.email + '</b>, ' +
+                        'exists, you\'ll receive an email with a news automatically generated password',
+                    showCloseButton: true,
+                })
             }
         },
         methods: {

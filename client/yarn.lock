@@ -2706,11 +2706,6 @@ dot-prop@^4.1.1:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.1.0.tgz#9853b6ca98292acb7dec67a95018fa40bccff42c"
-  integrity sha512-/veDn2ztgRlB7gKmE3i9f6CmDIyXAy6d5nBq+whO9SLX+Zs1sXEgFLPi+aSuWqUuusMfbi84fT8j34fs1HaYUw==
-
 duplexer@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
@@ -7086,6 +7081,11 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+sweetalert2@7.x:
+  version "7.29.0"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.29.0.tgz#636aa5e0a57bbbb75501ef39104fc68a1a26b351"
+  integrity sha512-QYMpgj+W1nmE5I6hQ+Kvj+xSAJ78o5oawNOm65fq+0DRuZqmNPwGNnyfMcA3/porpje6RjXJd41NCJN8Rj83wQ==
+
 table@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/table/-/table-4.0.2.tgz#a33447375391e766ad34d3486e6e2aedc84d2e36"
@@ -7580,6 +7580,13 @@ vue-style-loader@^4.1.0:
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
+
+vue-sweetalert2@^1.5.7:
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/vue-sweetalert2/-/vue-sweetalert2-1.5.7.tgz#499fbafe29ca24ec9721c7b7d9ebaf4b7c95e6fc"
+  integrity sha512-f3sv6nmdYFG5QOe2fnbSHYi2qG/qe11772lrS6awZVSHPVtlyXC/EwooLClIM+YphRm+tW6ux9D/dgxQlyD5Ug==
+  dependencies:
+    sweetalert2 "7.x"
 
 vue-template-compiler@^2.5.17:
   version "2.5.17"
