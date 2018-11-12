@@ -58,9 +58,17 @@ router.post('/', function (req, res, next) {
         req.body.email &&
         req.body.username &&
         req.body.password) {
-        User.findOne({email: req.body.email}, function (err, user) {
+        User.findOne({
+            $or: [
+                {email: req.body.email},
+                {username: req.body.username}
+            ]
+        }, function (err, user) {
             if (user) {
-                return res.status(401).send('That user already exists!');
+                return res.send({
+                    status: 401,
+                    error: "A user with the same username or email"
+                });
             } else {
                 bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS, function (err, hash) {
                     user = new User({
@@ -81,12 +89,11 @@ router.post('/', function (req, res, next) {
                 });
             }
         });
-
-
     } else if (req.body.logemail && req.body.logpassword) {
         User.authenticate(req.body.logemail, req.body.logpassword, function (error, user) {
             if (error || !user) {
-                return res.status(403).send({
+                res.send({
+                    status: 403,
                     error: 'Wrong email or password.'
                 });
             } else {

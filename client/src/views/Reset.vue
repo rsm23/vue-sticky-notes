@@ -50,13 +50,12 @@
                         });
                         this.$router.push({
                             name: 'login', params: {
-                                refer: "reset",
+                                refer: 'reset',
                                 email: this.email
                             }
                         });
                         return;
                     }
-
                     alert('Correct them errors!');
                 });
             }

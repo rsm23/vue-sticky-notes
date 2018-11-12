@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-screen flex justify-center items-center bg-grey-lighter">
         <div class="w-full max-w-md mx-auto">
-            <form class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" @submit.prevent="handleRegister">
+            <form @submit.prevent="handleRegister" class="w-full bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <div class="flex flex-wrap mb-6">
                     <div class="w-full md:w-1/2 px-3">
                         <label class="block text-grey-darker text-sm font-bold mb-2"
@@ -107,9 +107,19 @@
                             password: this.password,
                             passwordConf: this.passwordConf
                         }).then((response) => {
-                            this.$store.dispatch('setToken', response.data.token);
-                            this.$store.dispatch('setUser', response.data.user);
-                            this.$router.push('/');
+                            if (response.data.status === 401) {
+                                this.$swal({
+                                    title: '<strong>Email or Username already exists</strong>',
+                                    type: 'error',
+                                    html: 'We have the <b>same username or email</b> in our database try to login a request a new password if you\'ve forgotten it',
+                                    showCloseButton: true,
+                                })
+                            } else {
+                                this.$store.dispatch('setToken', response.data.token);
+                                this.$store.dispatch('setUser', response.data.user);
+                                this.$router.push('/');
+                            }
+
                         });
                         return;
                     }

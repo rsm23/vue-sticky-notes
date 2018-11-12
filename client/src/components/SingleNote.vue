@@ -30,7 +30,7 @@
                               placeholder="Type a description ..."
                               v-if="edit && editId === i"
                               v-model="oneNote.text"></textarea>
-                    <p :class="{expand: idToExpand === oneNote._id, isDone: oneNote.completed}"
+                    <p :class="{expand: idToExpand === i, isDone: oneNote.completed}"
                        class="text-left overflow-x-auto h-16 break-words mt-4"
                        v-else v-html="modifiedText(i)"></p>
                     <div :class="(idToExpand === i) ? 'mt-2' : 'mt-10' " class="flex justify-between">
@@ -206,7 +206,7 @@
                 this.editId = -1;
                 this.edit = false;
             },
-            expandNote: (id) => {
+            expandNote: function (id) {
                 if (this.expanded === false) {
                     this.idToExpand = id;
                     this.expanded = true;

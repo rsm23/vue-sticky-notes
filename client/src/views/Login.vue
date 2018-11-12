@@ -70,9 +70,18 @@
                             logemail: this.email,
                             logpassword: this.password
                         }).then((response) => {
-                            this.$store.dispatch('setToken', response.data.token);
-                            this.$store.dispatch('setUser', response.data.user);
-                            this.$router.push('/');
+                            if (response.data.status === 403) {
+                                this.$swal({
+                                    title: '<strong>Email or Password incorrect</strong>',
+                                    type: 'error',
+                                    html: 'We can\'t find a user in our database with the data you provided',
+                                    showCloseButton: true,
+                                })
+                            } else {
+                                this.$store.dispatch('setToken', response.data.token);
+                                this.$store.dispatch('setUser', response.data.user);
+                                this.$router.push('/');
+                            }
                         });
                         return;
                     }
